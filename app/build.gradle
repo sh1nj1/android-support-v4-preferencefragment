@@ -1,0 +1,33 @@
+repositories {
+    maven {
+        url 'http://sh1nj1.com:8080/nexus/content/repositories/public/'
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.1"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile project(':lib')
+    compile 'com.android.support:appcompat-v7:19.+'
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+}

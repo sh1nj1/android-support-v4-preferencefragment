@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <color name="theme_color">#14bef0</color>
+    <color name="theme_deep_color">#009bdf</color>
+    <color name="window_background">#eeeeee</color>
+
+    <color name="primary_text_dark">#3d3d3d</color>
+    <color name="secondary_text_dark">#919191</color>
+    <color name="text_light">#ffffff</color>
+    <color name="background_content_light">#ffffff</color>
+
+</resources>

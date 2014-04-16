@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:key="pref_category_about" android:title="@string/about">
+        <Preference android:key="@string/pref_key_version" android:title="@string/version" />
+        <Preference android:layout="@layout/preference" android:key="@string/pref_key_version2" android:title="@string/version" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,160 +1,16 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.9.+'
-        classpath 'com.github.dcendents:android-maven-plugin:1.0'
     }
 }
 
-apply plugin: 'android-library'
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-archivesBaseName = 'android-support-v4-preferencefragment'
-group = 'com.sh1nj1.android'
-version = '1.0.2-SNAPSHOT'
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-innerRepositoryBase = 'http://sh1nj1.com:8080/nexus/content/repositories'
-
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-}
-
-android {
-    compileSdkVersion 17
-    buildToolsVersion '19.0.0'
-
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
-    }
-	
-    lintOptions {
-        abortOnError false
-    }
-
-}
-
-dependencies {
-    
-    compile 'com.android.support:support-v4:19.0.+'
-}
-
-task instrumentTest(dependsOn: connectedCheck)
-
-task apklib(type: Zip) {
-    dependsOn 'packageReleaseJar'
-    appendix = extension = 'apklib'
-
-    from 'AndroidManifest.xml'
-    into('res') {
-        from 'res'
-    }
-    into('src') {
-        from 'src'
-    }
-}
-
-configurations {
-    archives {
-        extendsFrom configurations.default
-    }
-}
-
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-uploadArchives {
+allprojects {
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: innerRepositoryBase + '/releases/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-            snapshotRepository(url: innerRepositoryBase + '/snapshots/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            modifyPom(addFilter('aar') { artifact, file ->
-                artifact.name == archivesBaseName
-            })
-
-            // FIXME I can't upload apklib I don't know even if I declare "archives { apklib }".
-            modifyPom(addFilter('apklib') { artifact, file ->
-                artifact.name == archivesBaseName + '-apklib'
-            })
-
-            // There's no official apklib for Google Play services, so we
-            // can't really maintain that dependency for the apklib packaging.
-            pom('apklib').whenConfigured { pom ->
-                pom.dependencies = []
-            }
-        }
+        mavenCentral()
     }
-}
-
-def modifyPom(pom) {
-    pom.project {
-        name archivesBaseName
-        description 'based on https://github.com/kolavar/android-support-v4-preferencefragment'
-        url 'https://github.com/sh1nj1/android-support-v4-preferencefragment'
-
-        scm {
-            url 'scm:git@github.com/sh1nj1/android-support-v4-preferencefragment.git'
-            connection 'scm:git@github.com/sh1nj1/android-support-v4-preferencefragment.git'
-            developerConnection 'scm:git@github.com/sh1nj1/android-support-v4-preferencefragment.git'
-        }
-
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
-
-        /*
-        organization {
-            name 'Google Inc'
-            url 'http://developers.google.com/maps'
-        }
-        */
-
-        developers {
-            developer {
-                id 'sh1nj1'
-                name ''
-                url 'https://github.com/sh1nj1'
-            }
-        }
-    }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
 }
